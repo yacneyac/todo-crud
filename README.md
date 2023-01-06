@@ -1,7 +1,7 @@
 # todo-crud
 The simple CRUD API for to-do list.
 ## Stack
-python3.9, Flask-RESTful, Flask-SQLAlchem
+python3.9, Flask-RESTful, Flask-SQLAlchem, PostgresDB
 
 ## Requirements
 1. docker compose [Install the Compose standalone](https://docs.docker.com/compose/install/other/)
@@ -76,6 +76,21 @@ python3.9, Flask-RESTful, Flask-SQLAlchem
     
 ```
 
+**Read task by ID**
+```
+    curl -X GET http://localhost:5000/todos/1
+    
+    {
+        "id": 1,
+        "description": "Need to buy a bottle of milk",
+        "status": 1,
+        "is_deleted": 0,
+        "created": "2023-01-06 15:05:49.714290",
+        "deleted": null
+    }
+    
+```
+
 **Update task by ID**
 ```
     curl -X PUT http://localhost:5000/todos/1 
@@ -95,6 +110,21 @@ python3.9, Flask-RESTful, Flask-SQLAlchem
 **Delete a task by ID**
 ```
     curl -X DELETE http://localhost:5000/todos/1
+```
+
+## Invalid requests
+
+**Missed task**
+```
+    curl http://localhost:5000/todos/33
+    
+    {
+    "message": "Task with id=33 is missed"
+    }
+```
+
+**Missed field**
+```
 ```
 
 
