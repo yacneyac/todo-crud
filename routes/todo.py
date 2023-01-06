@@ -1,18 +1,16 @@
-# from datetime import datetime as dt
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from flask import request
 from flask_restful import Resource
-# from werkzeug.http import HTTP_STATUS_CODES
 
 
 import models
 
-from init_app import db, parser
+from init_app import db, parser, StatusHTTP
 
 
-parser.add_argument('status', type=int, required=True, help='status is required')
-parser.add_argument('description', type=str, required=False)
+parser.add_argument('status', type=int)
+parser.add_argument('description', type=str)
 
 MSG_MAP = {
     404: 'Todo with id={} is missed'
@@ -39,9 +37,9 @@ class TodoListAPI(Resource):
         try:
             db.session.commit()
         except IntegrityError as err:
-            return {'message': err.orig.args}, 500
+            return {'message': err.orig.args}, StatusHTTP.SERVER_ERROR
 
-        return todo.serialize(), 201
+        return todo.serialize(), StatusHTTP.CREATED
 
 
 class TodoAPI(Resource):
@@ -55,19 +53,26 @@ class TodoAPI(Resource):
     @staticmethod
     def put(t_id):
         """ Update a to-do by ID """
-        args = parser.parse_args()
+        data = parser.parse_args()
         todo = models.Todo.query.filter_by(id=t_id).first_or_404(description=MSG_MAP[404].format(t_id))
-        todo.status = args['status']
 
-        if args['description'] is not None:
-            todo.description = args['description']
+        if all(val is None for val in data.values()):
+            return {'message': 'Nothing to update! '
+                               'The values are missed or the name of the fields are invalid'}\
+                , StatusHTTP.BAD_REQUEST
+
+        if data['status'] is not None:
+            todo.status = data['status']
+
+        if data['description'] is not None:
+            todo.description = data['description']
 
         try:
             db.session.commit()
         except IntegrityError as err:
-            return {'message': err.orig.args}, 500
+            return {'message': err.orig.args}, StatusHTTP.SERVER_ERROR
 
-        return todo.serialize(), 200
+        return todo.serialize()
 
     @staticmethod
     def delete(t_id):
@@ -78,6 +83,6 @@ class TodoAPI(Resource):
         try:
             db.session.commit()
         except IntegrityError as err:
-            return {'message': err.orig.args}, 500
+            return {'message': err.orig.args}, StatusHTTP.SERVER_ERROR
 
-        return '', 204
+        return '', StatusHTTP.NO_CONTENT
