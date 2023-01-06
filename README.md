@@ -10,10 +10,11 @@ The simple CRUD API for to-do list.
 3. run server
 
 ## CRUD API
-* See all available status
-  curl -X GET http://localhost:5000/statuses
-    response: 
-[
+**Get all available statuses**
+```
+ curl -X GET http://localhost:5000/statuses
+ 
+ [
     {
         "id": 1,
         "name": "new"
@@ -27,14 +28,49 @@ The simple CRUD API for to-do list.
         "name": "in_work"
     }
 ]
-* 
-* Create a new todo
-    curl -X POST http://localhost:5000/todos 
-         -d '{"description": "Task 1"}' 
-         -H 'Content-Type: application/json'
+ 
+```
 
-* Read all todos
-    curl -X GET http://localhost:5000/todos 
+**Create a new task**
+```
+    curl -X POST http://localhost:5000/todos 
+         -H 'Content-Type: application/json'
+         -d '{"description": "Need to buy a bottle of milk"}' 
+         
+   {
+    "id": 1,
+    "description": "Need to buy a bottle of milk",
+    "status": 1,
+    "is_deleted": 0,
+    "created": "2023-01-06 15:05:49.714290",
+    "deleted": null
+   }      
+```
+
+**Read all tasks**
+```
+    curl -X GET http://localhost:5000/todos
+    
+    [
+    {
+        "id": 1,
+        "description": "need to buy a car1!",
+        "status": 1,
+        "is_deleted": 0,
+        "created": "2023-01-06 14:37:29.482360",
+        "deleted": null
+    },
+    {
+        "id": 2,
+        "description": "need to buy a car1!",
+        "status": 1,
+        "is_deleted": 0,
+        "created": "2023-01-06 14:37:57.078415",
+        "deleted": null
+    }
+    ]
+    
+```
 
 * Update todo
     curl -X PUT http://localhost:5000/todos/1 
