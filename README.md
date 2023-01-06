@@ -1,11 +1,15 @@
 # todo-crud
 The simple CRUD API for to-do list.
+## Stack
+python3.9, Flask-RESTful, Flask-SQLAlchem
+
 ## Requirements
 1. docker compose [Install the Compose standalone](https://docs.docker.com/compose/install/other/)
-2. poetry [Install poetry]https://python-poetry.org/docs/#installation
+2. poetry [Install poetry](https://python-poetry.org/docs/#installation)
+3. python3.9
 
 ## How to start
-1. need to start a PosrgresDB in docker container `docker-compose -f ./compose-db.yml up -d`
+1. need to start a PostgresDB in docker container `docker-compose -f ./compose-db.yml up -d`
 2. build db `poetry run python3.9 make_db.py`
 3. run server `poetry run python3.9 main.py`
 
