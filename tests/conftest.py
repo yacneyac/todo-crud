@@ -1,20 +1,20 @@
 import pytest
 
+
 import models
+
 from init_app import db
 from main import app
+from utils import TASK_STATUS
 
 
 @pytest.fixture
 def test_app():
-    # db_fd, flaskr.app.config['DATABASE'] = tempfile.mkstemp()
     app.config['TESTING'] = True
 
-    # with app.test_client() as client:
     with app.app_context():
-        db.drop_all()
         db.create_all()
-        for name in ['new', 'done', 'in_work']:
+        for name in TASK_STATUS:
             status = models.Status(
                 name=name,
             )

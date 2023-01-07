@@ -1,14 +1,15 @@
-from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from flask import request
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 
 import models
 
-from init_app import db, parser, StatusHTTP
+from init_app import db
+from utils import StatusHTTP
 
 
+parser = reqparse.RequestParser()
 parser.add_argument('status', type=int)
 parser.add_argument('description', type=str)
 
@@ -27,7 +28,11 @@ class TaskListAPI(Resource):
     @staticmethod
     def post():
         """ Create a new to-do with the status "new" """
-        new_status = models.Status.query.filter_by(name='new').first()
+        new_status = models.Status.\
+            query.\
+            filter_by(name='new').\
+            first()
+
         if not request.json.get('description'):
             return {'message': 'The "description" parameter is missed'}, StatusHTTP.BAD_REQUEST
 
@@ -50,14 +55,21 @@ class TaskAPI(Resource):
     @staticmethod
     def get(t_id):
         """ Find task by ID """
-        task = db.get_or_404(models.Task, t_id, description=MSG_MAP[404].format(t_id))
+        task = db.get_or_404(
+            models.Task,
+            t_id,
+            description=MSG_MAP[404].format(t_id)
+        )
         return task.serialize()
 
     @staticmethod
     def put(t_id):
         """ Update task by ID """
         data = parser.parse_args()
-        task = models.Task.query.filter_by(id=t_id).first_or_404(description=MSG_MAP[404].format(t_id))
+        task = models.Task.\
+            query.\
+            filter_by(id=t_id).\
+            first_or_404(description=MSG_MAP[404].format(t_id))
 
         if all(val is None for val in data.values()):
             return {'message': 'Nothing to update! '
@@ -81,7 +93,11 @@ class TaskAPI(Resource):
     @staticmethod
     def delete(t_id):
         """ Delete task by ID """
-        task = models.Task.query.filter_by(id=t_id).first_or_404(description=MSG_MAP[404].format(t_id))
+        task = models.Task.\
+            query.\
+            filter_by(id=t_id).\
+            first_or_404(description=MSG_MAP[404].format(t_id))
+
         db.session.delete(task)
         try:
             db.session.commit()
