@@ -143,8 +143,26 @@ Table **Status**
     }
 ```
 
-**Missed field**
+**Invalid type of status field**
 ```
+    curl -X PUT http://localhost:5000/tasks/1 
+    -d '{"status":"done"}' 
+    -H 'Content-Type: application/json'
+    
+    {
+    "message": {
+        "status": "invalid literal for int() with base 10: 'done'"
+    }
+    }
 ```
-
+**All parameters are missed**
+```
+    curl -X PUT http://localhost:5000/tasks/1 
+    -d '{}' 
+    -H 'Content-Type: application/json'
+    
+    {
+        "message": "Nothing to update! The values are missed or the name of the fields are invalid"
+    }
+```
 

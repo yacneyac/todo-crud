@@ -82,9 +82,7 @@ class TaskAPI(Resource):
     def delete(t_id):
         """ Delete task by ID """
         task = models.Task.query.filter_by(id=t_id).first_or_404(description=MSG_MAP[404].format(t_id))
-        task.is_deleted = 1
-        task.deleted = func.now()
-        # db.session.delete(task)
+        db.session.delete(task)
         try:
             db.session.commit()
         except IntegrityError as err:
