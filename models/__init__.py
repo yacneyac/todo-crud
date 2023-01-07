@@ -1,2 +1,2 @@
-from .status import Status, db
+from .status import Status
 from .todo import Todo

@@ -1,4 +1,3 @@
-# from flask import Flask
 from flask_restful import Api
 
 
@@ -7,7 +6,6 @@ import routes
 from init_app import app
 
 
-# app = Flask(__name__)
 api = Api(app)
 
 api.add_resource(

@@ -21,6 +21,7 @@ class TodoListAPI(Resource):
     @staticmethod
     def get():
         """ Find all todos in DB """
+        # models.Todo.query.scalars().all()
         todos = db.session.execute(db.select(models.Todo)).scalars().all()
         return [todo.serialize() for todo in todos]
 
