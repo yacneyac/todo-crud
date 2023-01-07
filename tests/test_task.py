@@ -2,16 +2,57 @@ import models
 
 
 def test_get_tasks_empty(client):
-    response = client.get('/todos')
+    response = client.get('/tasks')
     assert response.json == [], response.status == 200
 
 
+def test_get_missed_task_by_id(client):
+    response = client.get('/tasks/1')
+    assert response.json == {'message': 'Task with id=1 is missed'}, response.status == 200
+
+
 def test_add_a_new_task_success(client, test_app):
-    response = client.post('/todos', json={'description': 'task1'})
+    response = client.post('/tasks', json={'description': 'task1'})
     assert response.json['status'] == 1, response.status == 201
 
+    # task is created in the db
     with test_app.app_context():
         assert (
-            models.Todo.query.filter_by(description='task1').one_or_none()
+            models.Task.query.filter_by(description='task1').one_or_none()
+            is not None
+        )
+
+
+def test_add_a_new_task_missed_description(client, test_app):
+    response = client.post('/tasks', json={})
+    assert response.status == '400 BAD REQUEST'
+
+
+def test_task_change_status_success(client, test_app):
+    response = client.post('/tasks', json={'description': 'task2'})
+    assert response.json['status'] == 1, response.status == 201
+
+    response = client.put(f'/tasks/{response.json["id"]}', json={'status': 3})
+    assert response.json['status'] == 3, response.status == 200
+
+    # status is changed in the db
+    with test_app.app_context():
+        assert (
+            models.Task.query.filter_by(status=3, description='task2').one_or_none()
+            is not None
+        )
+
+
+def test_task_change_missed_status(client, test_app):
+    response = client.post('/tasks', json={'description': 'task2'})
+    assert response.json['status'] == 1, response.status == 201
+
+    response = client.put(f'/tasks/{response.json["id"]}', json={'status': 5})
+    assert response.status == '500 INTERNAL SERVER ERROR'
+
+    # task is not changed in the db
+    with test_app.app_context():
+        assert (
+            models.Task.query.filter_by(status=1, description='task2').one_or_none()
             is not None
         )

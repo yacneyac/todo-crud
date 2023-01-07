@@ -9,13 +9,13 @@ from init_app import app
 api = Api(app)
 
 api.add_resource(
-    routes.TodoAPI,
-    '/todos/<int:t_id>'
+    routes.TaskAPI,
+    '/tasks/<int:t_id>'
 )
 
 api.add_resource(
-    routes.TodoListAPI,
-    '/todos',
+    routes.TaskListAPI,
+    '/tasks',
 )
 
 api.add_resource(

@@ -1,2 +1,2 @@
-from .todo import TodoAPI, TodoListAPI
+from .task import TaskAPI, TaskListAPI
 from .status import StatusAPI
