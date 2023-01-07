@@ -5,7 +5,8 @@ python3.9, Flask-RESTful, Flask-SQLAlchem, PostgresDB
 
 ## Install
 Need to install docker compose [Install the Compose standalone](https://docs.docker.com/compose/install/other/)
-clone the repository:
+
+Clone the repository:
 
     $ git clone git@github.com:yacneyac/todo-crud.git
     $ cd todo-crud
@@ -15,7 +16,7 @@ Create a virtualenv and activate it:
     $ python3.9 -m venv todo-venv
     $ . todo-venv/bin/activate
 
-install requirements:
+Install requirements:
 
     $ pip3.9 install -r ./requirements.txt
 
