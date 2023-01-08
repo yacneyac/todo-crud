@@ -98,9 +98,38 @@ Table **Status**
             "description": "Need to buy a bread",
             "status": 1,
             "created": "2023-01-06 15:05:55.234221"
+        },
+        {
+            "id": 3,
+            "description": "Need to buy a butter",
+            "status": 1,
+            "created": "2023-01-06 15:08:23.224000"
+        },
+        ...
+    ]
+```
+
+**Read tasks by page**
+
+Need to specify arguments `page` and `per_page` in the URL
+```
+    curl -X GET "http://localhost:5000/tasks?page=1&per_page=2"
+    
+    < HTTP/1.1 200 OK
+    [
+        {
+            "id": 1,
+            "description": "Need to buy a bottle of milk",
+            "status": 1,
+            "created": "2023-01-06 15:05:49.714290"
+        },
+        {
+            "id": 2,
+            "description": "Need to buy a bread",
+            "status": 1,
+            "created": "2023-01-06 15:05:55.234221"
         }
     ]
-    
 ```
 
 **Read task by ID**

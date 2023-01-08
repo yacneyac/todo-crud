@@ -21,8 +21,10 @@ MSG_MAP = {
 class TaskListAPI(Resource):
     @staticmethod
     def get():
-        """ Find all tasks in DB """
-        tasks = models.Task.query.all()
+        """ Get all tasks or generate them by page """
+        tasks = db.paginate(
+            db.select(models.Task).order_by(models.Task.created)
+        )
         return [task.serialize() for task in tasks]
 
     @staticmethod
