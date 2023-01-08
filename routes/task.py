@@ -1,4 +1,4 @@
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import DatabaseError
 from flask import request
 from flask_restful import Resource, reqparse
 
@@ -27,14 +27,15 @@ class TaskListAPI(Resource):
 
     @staticmethod
     def post():
-        """ Create a new to-do with the status "new" """
+        """ Create a new task with the status "new" """
         new_status = models.Status.\
             query.\
             filter_by(name='new').\
             first()
 
         if not request.json.get('description'):
-            return {'message': 'The "description" parameter is missed'}, StatusHTTP.BAD_REQUEST
+            return {'message': 'The "description" parameter is missed'},\
+                StatusHTTP.UNSUPPORTED_MEDIA_TYPE
 
         task = models.Task(
             description=request.json['description'],
@@ -43,9 +44,9 @@ class TaskListAPI(Resource):
         db.session.add(task)
         try:
             db.session.commit()
-        except IntegrityError as err:
-            print(err.orig.args)
-            return {'message': 'server error'}, StatusHTTP.SERVER_ERROR
+        except DatabaseError as err:
+            print(err)
+            return {'message': err.orig.args}, StatusHTTP.UNSUPPORTED_MEDIA_TYPE
 
         return task.serialize(), StatusHTTP.CREATED
 
@@ -74,7 +75,7 @@ class TaskAPI(Resource):
         if all(val is None for val in data.values()):
             return {'message': 'Nothing to update! '
                                'The values are missed or the name of the fields are invalid'}\
-                , StatusHTTP.BAD_REQUEST
+                , StatusHTTP.UNSUPPORTED_MEDIA_TYPE
 
         if data['status'] is not None:
             task.status = data['status']
@@ -84,9 +85,9 @@ class TaskAPI(Resource):
 
         try:
             db.session.commit()
-        except IntegrityError as err:
-            print(err.orig.args)
-            return {'message': 'server error'}, StatusHTTP.SERVER_ERROR
+        except DatabaseError as err:
+            print(err)
+            return {'message': err.orig.args}, StatusHTTP.UNSUPPORTED_MEDIA_TYPE
 
         return task.serialize()
 
@@ -99,10 +100,6 @@ class TaskAPI(Resource):
             first_or_404(description=MSG_MAP[404].format(t_id))
 
         db.session.delete(task)
-        try:
-            db.session.commit()
-        except IntegrityError as err:
-            print(err.orig.args)
-            return {'message': 'server error'}, StatusHTTP.SERVER_ERROR
+        db.session.commit()
 
         return '', StatusHTTP.NO_CONTENT
