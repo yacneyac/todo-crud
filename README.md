@@ -22,25 +22,26 @@ Install requirements:
 
 ## How to start
 1. need to start a PostgresDB in docker container `$ docker-compose -f ./compose-db.yml up -d`
-2. build Database `$ python3.9 make_db.py`
-3. run server `$ python3.9 main.py`
+2. run tests `$ pytest`
+3. build Database `$ python3.9 make_db.py`
+4. run server `$ python3.9 main.py`
 
 ## DB Schema
 Table **Task**
 
-| name        | type                 |    
-|-------------|----------------------|
-| id          | Integer (PK)             |
-| description | String               |
-| created     | DateTime             |
-| status      | Integer **ForeignKey(Status.id)** |
+| name        | type                    |    
+|-------------|-------------------------|
+| id          | Integer **PK**          |
+| description | String                  |
+| created     | DateTime                |
+| status      | Integer **FK(Status.id)** |
 
 Table **Status**
 
-| name        | type     |    
-|-------------|----------|
-| id          | Integer (PK) |
-| name        | String   |
+| name        | type           |    
+|-------------|----------------|
+| id          | Integer **PK** |
+| name        | String         |
 
 
 ## CRUD API
@@ -81,7 +82,10 @@ Table **Status**
    }      
 ```
 
-**Read all tasks**
+**Read tasks**
+
+To prevent users from requesting too many results on a single page 
+the result will be generated with 20 items per page.
 ```
     curl -X GET http://localhost:5000/tasks
     
@@ -108,8 +112,6 @@ Table **Status**
         ...
     ]
 ```
-
-**Read tasks by page**
 
 Need to specify arguments `page` and `per_page` in the URL
 ```
