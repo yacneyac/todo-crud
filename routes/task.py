@@ -46,7 +46,8 @@ class TaskListAPI(Resource):
             db.session.commit()
         except DatabaseError as err:
             print(err)
-            return {'message': err.orig.args}, StatusHTTP.UNSUPPORTED_MEDIA_TYPE
+            return {'message': 'Cannot create a new task.'}, \
+                StatusHTTP.UNSUPPORTED_MEDIA_TYPE
 
         return task.serialize(), StatusHTTP.CREATED
 
@@ -87,7 +88,8 @@ class TaskAPI(Resource):
             db.session.commit()
         except DatabaseError as err:
             print(err)
-            return {'message': err.orig.args}, StatusHTTP.UNSUPPORTED_MEDIA_TYPE
+            return {'message': 'Cannot update the task'}, \
+                StatusHTTP.UNSUPPORTED_MEDIA_TYPE
 
         return task.serialize()
 

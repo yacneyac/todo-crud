@@ -46,22 +46,23 @@ Table **Status**
 ## CRUD API
 **Get all available statuses**
 ```
- curl -X GET http://localhost:5000/statuses
+    curl -X GET http://localhost:5000/statuses
  
- [
-    {
-        "id": 1,
-        "name": "new"
-    },
-    {
-        "id": 2,
-        "name": "done"
-    },
-    {
-        "id": 3,
-        "name": "in_work"
-    }
-]
+    < HTTP/1.1 200 OK
+    [
+        {
+            "id": 1,
+            "name": "new"
+        },
+        {
+            "id": 2,
+            "name": "done"
+        },
+        {
+            "id": 3,
+            "name": "in_work"
+        }
+    ]
  
 ```
 
@@ -70,12 +71,13 @@ Table **Status**
     curl -X POST http://localhost:5000/tasks 
          -H 'Content-Type: application/json'
          -d '{"description": "Need to buy a bottle of milk"}' 
-         
+    
+   < HTTP/1.1 201 CREATED
    {
-    "id": 1,
-    "description": "Need to buy a bottle of milk",
-    "status": 1,
-    "created": "2023-01-06 15:05:49.714290"
+        "id": 1,
+        "description": "Need to buy a bottle of milk",
+        "status": 1,
+        "created": "2023-01-06 15:05:49.714290"
    }      
 ```
 
@@ -83,19 +85,20 @@ Table **Status**
 ```
     curl -X GET http://localhost:5000/tasks
     
+    < HTTP/1.1 200 OK
     [
-    {
-        "id": 1,
-        "description": "Need to buy a bottle of milk",
-        "status": 1,
-        "created": "2023-01-06 15:05:49.714290"
-    },
-    {
-        "id": 2,
-        "description": "Need to buy a bread",
-        "status": 1,
-        "created": "2023-01-06 15:05:55.234221"
-    }
+        {
+            "id": 1,
+            "description": "Need to buy a bottle of milk",
+            "status": 1,
+            "created": "2023-01-06 15:05:49.714290"
+        },
+        {
+            "id": 2,
+            "description": "Need to buy a bread",
+            "status": 1,
+            "created": "2023-01-06 15:05:55.234221"
+        }
     ]
     
 ```
@@ -104,6 +107,7 @@ Table **Status**
 ```
     curl -X GET http://localhost:5000/tasks/1
     
+    < HTTP/1.1 200 OK
     {
         "id": 1,
         "description": "Need to buy a bottle of milk",
@@ -119,17 +123,20 @@ Table **Status**
          -d '{"status": 3, "description": "Need to buy a bottle of milk and butter"}' 
          -H 'Content-Type: application/json'
    
+   < HTTP/1.1 200 OK
    {
-    "id": 1,
-    "description": "Need to buy a bottle of milk and butter",
-    "status": 3,
-    "created": "2023-01-06 15:05:49.714290"
+        "id": 1,
+        "description": "Need to buy a bottle of milk and butter",
+        "status": 3,
+        "created": "2023-01-06 15:05:49.714290"
    }
 ```
 
 **Delete a task by ID**
 ```
     curl -X DELETE http://localhost:5000/tasks/1
+    
+    < HTTP/1.1 204 NO CONTENT
 ```
 
 ## Invalid requests
@@ -138,8 +145,9 @@ Table **Status**
 ```
     curl http://localhost:5000/tasks/33
     
+    < 404 NOT FOUND
     {
-    "message": "Task with id=33 is missed"
+        "message": "Task with id=33 is missed"
     }
 ```
 
@@ -149,10 +157,22 @@ Table **Status**
     -d '{"status":"done"}' 
     -H 'Content-Type: application/json'
     
+    < 400 BAD REQUEST
     {
-    "message": {
-        "status": "invalid literal for int() with base 10: 'done'"
+        "message": {
+            "status": "invalid literal for int() with base 10: 'done'"
+        }
     }
+```
+**Status ID is missed in the DB**
+```
+    curl -X PUT http://localhost:5000/tasks/1 
+    -d '{"status":23}' 
+    -H 'Content-Type: application/json'
+    
+    < 415 UNSUPPORTED MEDIA TYPE
+    {
+        "message": "Cannot update the task"
     }
 ```
 **All parameters are missed**
@@ -161,6 +181,7 @@ Table **Status**
     -d '{}' 
     -H 'Content-Type: application/json'
     
+    < 415 UNSUPPORTED MEDIA TYPE
     {
         "message": "Nothing to update! The values are missed or the name of the fields are invalid"
     }
