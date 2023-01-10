@@ -8,7 +8,7 @@ Need to install docker compose [Install the Compose standalone](https://docs.doc
 
 Clone the repository:
 
-    $ git clone git@github.com:yacneyac/todo-crud.git
+    $ git clone https://github.com/yacneyac/todo-crud.git
     $ cd todo-crud
 
 Create a virtualenv and activate it:
